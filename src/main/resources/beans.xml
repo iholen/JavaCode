@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="spring.beans.LoggerBeanPostProcessor" />
+
+    <bean id="hello" class="spring.beans.Hello">
+        <property name="dao" ref="dao" />
+    </bean>
+    <bean id="dao" class="spring.beans.Dao">
+        <property name="hello" ref="hello" />
+    </bean>
+
+    <!-- FactoryBean 的使用 -->
+    <bean id="helloFactory" class="spring.beans.HelloFactoryBean" />
+
+    <!-- 静态工厂类 的使用 -->
+    <bean id="staticFactory" class="spring.beans.StaticFactoryBean" factory-method="getDao" />
+
+    <!-- factory-bean 的使用 -->
+    <bean id="serviceFactory" class="spring.beans.ServiceFactory" factory-method="createInstance" />
+    <bean id="userService" factory-bean="serviceFactory" factory-method="createUserService" />
+
+    <!--
+        解决 一个 singleton 类型的 bean 中有一个 prototype 类型的成员变量
+        1. 实现 ApplicationContextAware / BeanFactoryAware 接口, 获取 prototype 类型的成员变量时从applicationContext中重新读取
+        2. 使用 lookup-method
+    -->
+    <bean id="news" class="spring.beans.News" scope="prototype" />
+    <bean id="newsService" class="spring.beans.NewsService">
+        <!--<property name="news" ref="news" />-->
+        <lookup-method name="getNews" bean="news" />
+    </bean>
+
+
+</beans>
