@@ -1,11 +1,14 @@
 package algorithms;
 
-public class TreeNode {
+public class TreeNode implements Comparable<TreeNode> {
 
     public int val;
     public TreeNode left;
     public TreeNode right;
     public TreeNode(int x) { val = x; }
-    public TreeNode() {}
 
+    @Override
+    public int compareTo(TreeNode o) {
+        return val - o.val;
+    }
 }
